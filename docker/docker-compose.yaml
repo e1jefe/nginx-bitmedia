@@ -1,0 +1,6 @@
+version: '3.7'
+services:
+  nginx:
+    image: ${DOCKERHUB_USERNAME}/nginx-bitmedia
+    ports:
+      - 80:80
