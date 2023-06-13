@@ -1,15 +1,28 @@
+# Specify the Terraform provider to use
 provider "digitalocean" {
-  token = var.DIGITALOCEAN_API_TOKEN
+  token = var.do_token
+}
+# Setup a DO droplet
+resource "digitalocean_droplet" "web-server" {
+  image  = var.droplet_image
+  name   = "web-server"
+  region = var.region
+  size   = var.droplet_size
+  ssh_keys = [
+    var.ssh_key_fingerprint,
+  ]
+  user_data = <<-EOF
+    #!/bin/bash
+    adduser nginx-bitmedia --disabled-password --gecos ''
+    usermod -aG sudo newuser
+    echo 'nginx-bitmedia ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/90-cloud-init-users
+    mkdir /home/nginx-bitmedia/.ssh
+    cp /root/.ssh/authorized_keys /home/nginx-bitmedia/.ssh/
+    chown -R nginx-bitmedia:nginx-bitmedia /home/nginx-bitmedia/.ssh
+  EOF
 }
 
-resource "digitalocean_droplet" "web_server" {
-  image  = "ubuntu-20-04-x64"  # Specify the desired image
-  name   = "web_server"
-  region = "fra1"  # Specify the desired region
-
-  ssh_keys = [
-    var.SSH_KEY_FINGERPRINT,
-  ]
-
-  size = "s-1vcpu-1gb"  # Specify the desired droplet size
+# Output the public IP address of the new droplet
+output "public_ip_server" {
+  value = digitalocean_droplet.web-server.ipv4_address
 }

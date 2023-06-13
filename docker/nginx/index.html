@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript">
+        function getIPDetails() {
+            // Send a request to the IP geolocation API
+            fetch('http://ip-api.com/json')
+                .then(response => response.json())
+                .then(data => {
+                    // Extract and display the IP address and location details
+                    document.getElementById('ipAddress').textContent = data.query;
+                    document.getElementById('country').textContent = data.country;
+                    document.getElementById('city').textContent = data.city;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+    <title>Bitmedia labs test task Dmytro Sheptun</title>
+</head>
+<body>
+<h1>Welcome to Bitmedia labs!</h1>
+<p>This is a test task by Dmytro Sheptun.</p>
+
+<h2>IP Address and Location Detection</h2>
+<button onclick="getIPDetails()">Get IP Details</button>
+<p>IP Address: <span id="ipAddress"></span></p>
+<p>Country: <span id="country"></span></p>
+<p>City: <span id="city"></span></p>
+</body>
+</html>

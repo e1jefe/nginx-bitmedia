@@ -1,22 +1,65 @@
-- hosts: web_server
-  become: yes
+- hosts: all
+  become: true
+
   tasks:
-    - name: Update packages
+    - name: Install aptitude
       apt:
-        update_cache: yes
-        cache_valid_time: 3600
+        name: aptitude
+        state: latest
+        update_cache: true
 
-    - name: Install docker
+    - name: Install required system packages
       apt:
-        name: docker.io
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
-    - name: Install docker compose
-      apt:
-        name: docker-compose
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
         state: present
 
-    - name: Start nginx using docker compose
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: Install Docker Compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: 'u+x,g+x'
+
+    - name: Pull Docker image
+      command: docker pull {{ lookup('env','DOCKERHUB_USERNAME') }}/nginx-bitmedia
+      register: pull_output
+      changed_when: "'Status: Downloaded newer image' in pull_output.stdout"
+
+    - name: Copy docker-compose.yml
+      copy:
+        src:  ../docker/docker-compose.yml
+        dest: /usr/src/docker-compose.yml
+
+    - name: replace image path
+      replace:
+        path: /usr/src/docker-compose.yml
+        regexp: 'image: nginx-bitmedia'
+        replace: "image: {{ lookup('env','DOCKERHUB_USERNAME') }}/nginx-bitmedia"
+
+    - name: Start Nginx using Docker Compose
       command: docker-compose up -d
       args:
-        chdir: ./docker-compose.yml
+        chdir: /usr/src
