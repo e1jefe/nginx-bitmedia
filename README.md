@@ -1,5 +1,5 @@
 # nginx-bitmedia
-** Nginx-bitmedia test task.**
+**Nginx-bitmedia test task**
 
 The code creates a droplet in digitalocean using terraform, builds a docker image, configures and deploys an Nginx server with an inscription on the start page using ansible and docker compose.
 
@@ -11,6 +11,7 @@ The code creates a droplet in digitalocean using terraform, builds a docker imag
 1) Retrieve your API key from [DigitalOcean]( https://cloud.digitalocean.com/account/api/tokens)
    
 **Note**: If you haven't already, you'll have to create an account and set up billing.
+
 2) Get your DigitalOcean SSH key fingerprint [DigitalOcean]( https://cloud.digitalocean.com/account/security)
 3) Get your DockerHub username  [DockerHub](https://docs.docker.com/docker-id/)
 4) Get your DockerHub access token  [DockerHub](https://hub.docker.com/settings/security)
