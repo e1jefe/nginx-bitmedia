@@ -1,6 +1,7 @@
-- hosts: all
+- hosts: webserver
   become: true
 
+  remote_user: nginx-bitmedia
   tasks:
     - name: Install aptitude
       apt:

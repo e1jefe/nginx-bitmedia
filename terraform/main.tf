@@ -14,7 +14,7 @@ resource "digitalocean_droplet" "web-server" {
   user_data = <<-EOF
     #!/bin/bash
     adduser nginx-bitmedia --disabled-password --gecos ''
-    usermod -aG sudo newuser
+    usermod -aG sudo nginx-bitmedia
     echo 'nginx-bitmedia ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/90-cloud-init-users
     mkdir /home/nginx-bitmedia/.ssh
     cp /root/.ssh/authorized_keys /home/nginx-bitmedia/.ssh/
