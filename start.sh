@@ -59,8 +59,8 @@ public_ip=$(terraform output -raw public_ip_server)
 cd -
 
 # Add public IP to inventory.ini
-echo 'webserver ansible_host='${public_ip} 'ansible_user=nginx-bitmedia' >> ./ansible/inventory.ini
+echo 'webserver ansible_host='${public_ip} 'ansible_user=nginx-bitmedia' 'ansible_ssh_private_key_file="~/.ssh/id_rsa"' >> ./ansible/inventory.ini
     sleep 5
 
 # Run Ansible playbook
-ansible-playbook -i ./ansible/inventory.ini -u nginx-bitmedia ./ansible/nginx.yml
+ansible-playbook -i ./ansible/inventory.ini ./ansible/nginx.yml -u nginx-bitmedia
